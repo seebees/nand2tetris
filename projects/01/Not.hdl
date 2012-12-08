@@ -12,5 +12,8 @@ CHIP Not {
     OUT out;
 
     PARTS:
-    Nand(a=in, b=in, out=out);
+    // Pining the value of a, we use the 
+    // bottom 2 lines of the Nand truth table
+    // out == Not(b)
+    Nand(a=true, b=in, out=out);
 }

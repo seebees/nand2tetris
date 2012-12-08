@@ -20,7 +20,16 @@ CHIP DMux4Way {
     OUT a, b, c, d;
 
     PARTS:
+    // Again, similarly to Mux, I use the last bit to
+    // get our in into t1, or t2
     DMux(in=in, sel=sel[1], a=t1, b=t2);
+
+    // And then I use the first bit to stuff in into the correct
+    // variable.  The trick here is that one of these two
+    // DMux gates will not matter.  Because either t1 or t2 will
+    // be false from the gate above.  If it is t1 for example,
+    // this first gate takes false, and puts false into a,
+    // and false into b as well.
     DMux(in=t1, sel=sel[0], a=a,  b=b);
     DMux(in=t2, sel=sel[0], a=c,  b=d);
 }

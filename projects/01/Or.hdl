@@ -12,6 +12,13 @@ CHIP Or {
     OUT out;
 
     PARTS:
+    // The Or truth table is only false when both a and b, are false
+    // This is like reading the Nand truth table from the bottom up,
+    // because Nand is only false when both a and b are true.
+    // Therefore if we take not(a) and not(b) and Nand them
+    // We will only get false when a and b are false.
+    // Nand(Not(false), Not(false)) == Nand(true, true) == false
+
     Not(in=a,             out=nota);
     Not(in=b,             out=notb);
     Nand(a=nota, b=notb,  out=out);

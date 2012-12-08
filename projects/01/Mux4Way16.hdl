@@ -20,7 +20,12 @@ CHIP Mux4Way16 {
     OUT out[16];
 
     PARTS:
+    // Take the case of sel == 10
+    // If sel[0] = 0 then we must want either
+    // a or c (becuase if sel == 10, sel[0] == 0, sel[1] == 1)
     Mux16(a=a,    b=b,    sel=sel[0], out=aORb);
     Mux16(a=c,    b=d,    sel=sel[0], out=cORd);
+
+    // If sel[1] == 1, then we want c.
     Mux16(a=aORb, b=cORd, sel=sel[1], out=out);
 }

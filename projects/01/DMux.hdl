@@ -15,11 +15,21 @@ CHIP DMux {
     OUT a, b;
 
     PARTS:
+    // This is a less efficent implementation, but I like it
+    // because I think that it is so cleare that is does not
+    // need any explination
     Mux(sel=sel, a=in,    b=false,  out=a);
     Mux(sel=sel, a=false, b=in,     out=b);
 }
 /*
+    // Similarly to Mux, we need both cases of sel
     Not(in=sel, out=notsel);
+
+    // If sel == 0, then notsel means that we are dealing
+    // with the bottom 2 lines of the And truth table
     And(a=in,   b=notsel, out=a);
+
+    // Since sel == 0 we are dealing with the top 2 lines
+    // of the And truth table, and will always b == 0
     And(a=in,   b=sel,    out=b);
 */

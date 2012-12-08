@@ -12,6 +12,7 @@ CHIP And {
     OUT out;
 
     PARTS:
+    // The N in Nand is for Not, so Not(Nand()) == And()
     Nand(a=a,     b=b,  out=nand);
     Not(in=nand,        out=out);
 }

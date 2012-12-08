@@ -13,14 +13,36 @@ CHIP Mux {
 
     PARTS:
     Not(a=sel,            out=notsel);
+
+    // If sel == 0, then we want the value of a.
+    // So notsel == 1 and this means that we use the bottom
+    // 2 lines of the Nand truth table and a1 == Not(a)
     Nand(a=notsel,  b=a,  out=a1);
+
+    // Similarly if sel = 0, then we use the top 2 lines
+    // of the Nand truth table therfore b1 == 1
     Nand(a=sel,     b=b,  out=b1);
+
+    // Finnaly, if b1 == 1 then looking at the 
+    // bottom 2 lines of the Nand truth table, 
+    // out == Not(a1) == Not(Not(a))) == a
     Nand(a=a1,      b=b1, out=out);
 }
-//nand(nand(nand(sel, 1), A), nand(sel, B))
 /*
     Not(in=sel,           out=notsel);
+
+    // If sel == 0, then we want a.  So notsel == 1
+    // and this means that we use the bottom 2 lines
+    // of the And truth table.  So a1 == a
     And(a=notsel, b=a,    out=a1);
+
+    // Similarly, if sel = 0, then we use the 
+    // top 2 lines of the And truth table therfore
+    // b1 == 0
     And(a=sel,    b=b,    out=b1);
+
+    // Finaly, if b1 == 0 then looking at the top
+    // 2 lines of the Or truth table, we see 
+    // out = a1 = a
     Or(a=a1,      b=b1,   out=out);
 */
