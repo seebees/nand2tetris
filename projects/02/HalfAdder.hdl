@@ -14,5 +14,14 @@ CHIP HalfAdder {
         carry;  // Left bit of a + b
 
     PARTS:
-    // Put your code here.
+    // in binnary:
+    // 0 + 0 == 00
+    // 1 + 0 == 01
+    // 0 + 1 == 01
+    // 1 + 1 == 10
+    // the right side of the result is sum
+    // the left side of the result is carry
+    Xor(a=a, b=b, out=sum);
+    And(a=a, b=b, out=carry);
 }
+

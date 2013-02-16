@@ -34,7 +34,7 @@
   
 CHIP ALU {
     IN  
-        x[16], y[16],  // 16-bit inputs        
+        x[16], y[16],  // 16-bit inputs
         zx, // zero the x input?
         nx, // negate the x input?
         zy, // zero the y input?
@@ -48,5 +48,47 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-    // Put your code here.
+    Not16(in=x, out=notx);
+    Not16(in=y, out=noty);
+    Mux4Way16(sel[1]=nx, sel[0]=zx   // note order
+            , a=x         // sel: 00
+            , b=false     // sel: 01
+            , c=notx      // sel: 10
+            , d=true      // sel: 11
+            , out=x1);    // x1 now has the value to operate on
+    Mux4Way16(sel[1]=ny, sel[0]=zy  // note order
+            , a = y       // sel: 00
+            , b = false   // sel: 01
+            , c = noty    // sel: 10
+            , d = true    // sel: 11
+            , out=y1);    // y1 now has the value to operate on
+
+    // operate on x1/y1
+    Add16(a=x1, b=y1, out=xPlusy);
+    And16(a=x1, b=y1, out=xAndy);
+    // pick the operation
+    Mux16(sel=f
+        , a=xAndy, b=xPlusy
+        , out=out1);      // temp output, need to pick out1/notout1
+    Not16(in=out1, out=notout1);
+
+    // pick the output
+    Mux16(sel=no
+        , a=out1, b=notout1
+        // I could make a Or16Way gate, not sure if that would not be better
+        , out[0..7]   = outLow
+        , out[8..15]  = outHigh
+        // if [15] is true, int is negative
+        , out[15]     = ng
+        , out         = out);
+
+    // determine if out is zero
+    Or8Way(in = outLow,  out = zrLow);
+    Or8Way(in = outHigh, out = zrHigh);
+    Or(a=zrLow, b=zrHigh, out=notzr);
+    // 0 | 0 => 0 so while my notation may seem backwards
+    // notzr is false when out is 0
+    // so Not(notzr) is what we are looking for
+    Not(in=notzr, out=zr);
+
 }
