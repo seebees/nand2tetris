@@ -13,58 +13,54 @@ CHIP Xor {
     OUT out;
 
     PARTS:
-    // Working backwards here, the output we want is:
-    // 0
-    // 1
-    // 1
-    // 0
-    // Nand is only false when both a and b are 1.
-    // So Nand of this truth table:
-    // a1 b1
-    // 1  1
-    // 1  0
-    // 0  1
-    // 1  1
-    // will produce the output we want.
-    // How do we get there?
-    // Well again, Nand of 1 0 or 0 1 is true, so looking at the base
-    // truth table
-    // 0 0
-    // 0 1
-    // 1 0
-    // 1 1
-    // the top and bottom lines are 0 0 and 1 1respctively, 
-    // a notb and b nota get us the tables we need.  I think lining
-    // the truth tables up like this helps (remember a and b are the base truth table)
-    // a  notb  b  nota
-    // 0  1     0  1
-    // 0  0     1  1
-    // 1  1     0  0
-    // 1  0     0  1
-    // If we Nand the above 2 truth tables above we get the truth table we want:
-    // a2 b1
-    // 1  1
-    // 1  0
-    // 0  1
-    // 1  1
+    // This is negative logic so...
+    // Nand is false ONLY when both inputs are true.
+    // So (a Nand not_b) is ONLY false if a is true
+    // and not_b is true.  Which means b is false.
+    // Doing this twice gets us two values that are false
+    // ONLY if one of the inputs is true.
+    // i.e. a1 is false ONLY if a is true and b is false.
+    // This means that both a1 and b1 can not both be false.
+    // The Nand truth table is:
+    // a1 b1 out
+    // 0  0  1
+    // 0  1  1
+    // 1  0  1
+    // 1  1  0
+    // As explained above a1 and b1 can not both be false
+    // so the top row is unreachable.
+    // Therefore (a1 Nand b1) gets us what we like!
 
     Not(in=a,             out=nota);
     Not(in=b,             out=notb);
+    // a1 will be true only if b is true
     Nand(a=a,     b=notb, out=a1);
+    // b1 will be true only if a is true
     Nand(a=nota,  b=b,    out=b1);
     Nand(a=a1,    b=b1,   out=out);
 }
 /*
     // A less efficent but perhapse clearer implementation?
-    // Again, going backwards, this time useing Or of
-    // a1 b1
-    // 0  0
-    // 0  1
-    // 1  0
-    // 0  0
-    // will give us the output we want.
-    // looking at the a notb, b nota tables above,
-    // two And operations do the trick.
+    // We want:
+    // a  b  r
+    // 0  0  0
+    // 0  1  1
+    // 1  0  1
+    // 0  0  0
+    // And is true only if a and b are true
+    // Therefore (a And not_b) will only be true
+    // if a is true and b is false
+    // doing this twice we have 2 values that
+    // are only true if one of the inputs are true
+    // The Or truth table is:
+    // a1 b1 out
+    // 0  0  0
+    // 0  1  1
+    // 1  0  1
+    // 1  1  1
+    // As explained above a1 and b1 will never both be true
+    // so the bottom row is unreachable.
+    // Therefor (a1 Or b1) gets us what we like!
 
     Not(in=a,            out=nota);
     Not(in=b,            out=notb);
